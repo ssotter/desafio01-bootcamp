@@ -1,7 +1,6 @@
 package com.ssotter.desafio01.services;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
