@@ -6,7 +6,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.aspectj.weaver.tools.cache.AsynchronousFileCacheBacking.UpdateIndexCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
@@ -14,6 +17,7 @@ import org.springframework.web.client.ResourceAccessException;
 import com.ssotter.desafio01.dto.ClientDTO;
 import com.ssotter.desafio01.entities.Client;
 import com.ssotter.desafio01.repositories.ClientRepository;
+import com.ssotter.desafio01.services.exceptions.DatabaseException;
 import com.ssotter.desafio01.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -61,6 +65,18 @@ public class ClientService {
 		}
 		catch (EntityNotFoundException e) {
 			throw new ResourceAccessException("Id not found" + id);
+		}
+	}
+
+	public void delete(Long id) {
+		try {
+		repository.deleteById(id);
+	}
+		catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not found" + id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
 		}
 	}
 }
