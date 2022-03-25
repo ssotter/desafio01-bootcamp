@@ -40,6 +40,7 @@ public class ClientService {
 
 	@Transactional
 	public ClientDTO insert(ClientDTO dto) {
+		try {
 		Client entity = new Client();
 		entity.setName(dto.getName());
 		entity.setCpf(dto.getCpf());
@@ -48,6 +49,10 @@ public class ClientService {
 		entity.setChildren(dto.getChildren());
 		entity = repository.save(entity);
 		return new ClientDTO(entity);
+	}
+		catch (EntityNotFoundException e) {
+			throw new ResourceAccessException("Id not found");
+		}
 	}
 
 	@Transactional
@@ -63,7 +68,7 @@ public class ClientService {
 			return new ClientDTO(entity);
 		}
 		catch (EntityNotFoundException e) {
-			throw new ResourceAccessException("Id not found" + id);
+			throw new ResourceNotFoundException("Id not found" + id);
 		}
 	}
 
